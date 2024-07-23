@@ -10,20 +10,6 @@ namespace EmployeeTerminalApp.utl
 {
     public static class ArgumentParser
     {
-        public static UpdateDto ToUpdateDto(IEnumerable<string> input) 
-        {
-            var props = GetProperties(input);
-
-            var dto = new UpdateDto();
-
-            foreach (var item in props)
-            {
-                FillProperty(dto, item);
-            }
-
-            return dto;
-        }
-
         public static UserDto ToUserDto(IEnumerable<string> input)
         {
             var props = GetProperties(input);
@@ -55,15 +41,6 @@ namespace EmployeeTerminalApp.utl
                 keyValuePairs.Add(pair[0], pair[1]);
             }
             return keyValuePairs;
-        }
-
-        private static UpdateDto FillProperty(UpdateDto dto, KeyValuePair<string, string> kvp)
-        {
-            if(kvp.Key == "Id") dto.Id = int.Parse(kvp.Value);
-            if(kvp.Key =="FirstName") dto.FirstName = kvp.Value;
-            if(kvp.Key == "LastName") dto.LastName = kvp.Value;
-            if(kvp.Key == "SalaryPerHour") dto.SalaryPerHour = decimal.Parse(kvp.Value);
-            return dto;
         }
 
         private static UserDto FillProperty(UserDto dto, KeyValuePair<string, string> kvp)

@@ -18,22 +18,40 @@ namespace EmployeeTerminalApp.Repositories
 {
     public class UserRepository : IRepository<User,UserDto>
     {
+        public bool InMemory { get; set; }
         private const string PATH= "G:\\Test" + "/testData/test data.json";
         private List<User> _users;
 
         public UserRepository()
         {
-            using (FileStream fstream = File.OpenRead(PATH))
+            try
             {
-                // выделяем массив для считывания данных из файла
-                byte[] buffer = new byte[fstream.Length];
-                // считываем данные
-                fstream.Read(buffer, 0, buffer.Length);
-                // декодируем байты в строку
-                string textFromFile = Encoding.Default.GetString(buffer);
-                _users = JsonConvert.DeserializeObject<List<User>>(textFromFile);
+                using (FileStream fstream = File.OpenRead(PATH))
+                {
+                    // выделяем массив для считывания данных из файла
+                    byte[] buffer = new byte[fstream.Length];
+                    // считываем данные
+                    fstream.Read(buffer, 0, buffer.Length);
+                    // декодируем байты в строку
+                    string textFromFile = Encoding.Default.GetString(buffer);
+                    _users = JsonConvert.DeserializeObject<List<User>>(textFromFile);
+                    InMemory = false;
+                }
+            }
+            catch 
+            { 
+                Console.WriteLine("Something wrong with file, start with emplty collection");
+                InMemory = true;
+                _users = new List<User>();
             }
         }
+
+        public UserRepository(List<User> users)
+        {
+            InMemory = true;
+            _users = users;
+        }
+
         public void Add(UserDto dto)
         {
             var user = dto.ToUser();
@@ -76,6 +94,7 @@ namespace EmployeeTerminalApp.Repositories
 
         private void Save()
         {
+            if (InMemory) return;
             JsonSerializer serializer = new JsonSerializer();
 
             using (StreamWriter sw = new StreamWriter(PATH))

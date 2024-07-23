@@ -28,7 +28,7 @@ namespace EmployeeTerminalApp.Controllers
             if(command.Equals("-get")) Get(ArgumentParser.GetIdProperty(arguments));
             if(command.Equals("-delete")) Delete(ArgumentParser.GetIdProperty(arguments));
             if(command.Equals("-add")) Add(ArgumentParser.ToUserDto(arguments));
-            if (command.Equals("-update")) Update(ArgumentParser.ToUpdateDto(arguments));
+            if (command.Equals("-update")) Update(ArgumentParser.GetIdProperty(arguments),ArgumentParser.ToUserDto(arguments));
         }
 
         private void Add(UserDto user)
@@ -58,9 +58,9 @@ namespace EmployeeTerminalApp.Controllers
             Console.WriteLine("User deleted");
         }
 
-        private void Update(UpdateDto dto)
+        private void Update(int id, UserDto dto)
         {
-            repository.Update(dto.Id,dto.ToUserDto());
+            repository.Update(id,dto);
             Console.WriteLine("User Updated");
         }
     }
